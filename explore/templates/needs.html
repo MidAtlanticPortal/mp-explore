@@ -1,0 +1,128 @@
+{% extends 'explore_base.html' %} 
+{% block  title %}MARCO Data Priorities{% endblock %}
+{% block main %}
+{% load flatblock_tags %}
+
+<h2>{% flatblock "data_needs_title" %}</h2>
+{% flatblock "data_needs_intro" %}
+
+<div class="row-fluid search-row">
+    <div class="span12" style="margin: 15px 0;">
+        <h3>Data Layer Search</h3>
+        <form class="form-search layer-search">
+            <input type="text" class="search-box" data-provide="typeahead" data-bind="value: searchTerm, event: { keyup: keySearch }">
+            <a class="btn">
+                <i class="icon-remove icon-large"></i> 
+            </a>
+        </form>
+    </div>
+</div>
+
+{% for theme in ordered_themes %}
+<div class="theme catalog-page">
+	<div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div id="{{ theme.name }}" style="position:relative; top:-100px;"></div>
+                <h3>
+                    {{ theme.display_name }} Data Needs
+                </h3>
+                <p>
+                    {{ theme.description }} 
+                    <span class="pull-right"><a href="/learn/{{theme.name}}">Learn More... </a></span>
+                </p>  
+            </div>
+            <div class="span6">
+                <a href="/learn/{{theme.name}}">
+                    <div class="image">
+                        <img src="{{MEDIA_URL}}marco/img/themes/{{theme.name}}.jpg" alt="">
+                        <div class="caption">
+                          {{ theme.display_name }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+	</div>
+    
+    <div id="{{theme.name}}">
+        <div> 
+              <ul class="unstyled">
+                {% for key, needs in theme_dict.items %}
+                    {% if key == theme %}
+                        {% for need in needs %}
+                            <li><div class="data-need">
+                                <div>
+                                    <h4>
+                                        {{ need.name }}
+                                    </h4>
+                                    <p> 
+                                        {{ need.description }}
+                                    </p>
+                                    <div class="well">
+                                        <div><strong>Source: </strong>{{ need.source }}</div>
+                                        <div><strong>Status: </strong>{{ need.status }}</div>
+                                        <div><strong>Contact: </strong>
+                                            {% if need.contact_email %}
+                                                <a href="mailto:{{need.contact_email}}">{{ need.contact }}</a>
+                                            {% else %}
+                                                {{ need.contact }}
+                                            {% endif %}
+                                        </div>
+                                        <div><strong>Expected Date of Upload to Portal: </strong>{{ need.expected_date }}</div>
+                                        {% if need.notes %}
+                                        <div><strong>Notes: </strong>{{ need.notes }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div></li>
+                        {% endfor needs%}
+                    {% endif %}
+                {% endfor items%}
+              </ul>
+        </div>
+    </div>
+</div>
+{% endfor themes %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $(document).ready( function() {
+        var layers = [],
+            layer_index = {}, 
+            search = function (val) {
+               var layer = layer_index[val];
+               //$(layer.layer.closest('.accordion-body')).addClass('in');
+               //$(layer.layer.closest('.accordion-body')).collapse('show');
+               layer.layer.find('h4').effect("pulsate", {times:2 }, 500);
+               setTimeout(function() {$(window).scrollTop(layer.layer.find('h4').offset().top-100)}, 200);
+               //$('html, body').animate( { setTimeout(function() {$(window).scrollTop(layer.layer.find('h4').offset().top)}, 200) }, 'slow');
+           };
+        $('.data-need').each( function(index, need) {
+            var data_name = $.trim($(need).find('h4').text());     
+            layers.push(data_name);
+            layer_index[data_name] = { 
+                layer: $(need)
+            };
+        });
+        $('.layer-search').find('input').typeahead( {
+            source: layers.sort()
+        });
+        $('.form-search').submit(function (event) {
+            event.preventDefault();
+            search($(this).find('input').val());
+        });
+        $('input').on('keyup', function (event) {
+            event.preventDefault();    
+            if (event.which === 13) {
+                search($(this).val());
+            }
+        });
+        
+        $('ul.typeahead').on('click', 'li', function () {
+            search($(this).text());
+        });
+    });
+</script>
+{% endblock %}
