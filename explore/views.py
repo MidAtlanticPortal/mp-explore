@@ -2,11 +2,22 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from data_manager.models import *
-from utils import get_domain
-import settings
+from django.conf import settings
 
+# from marco/utils.py
+def get_domain(port=8010):
+    try:
+        #domain = Site.objects.all()[0].domain 
+        domain = Site.objects.get(id=SITE_ID).domain
+        if 'localhost' in domain:
+            domain = 'localhost:%s' %port
+        domain = 'http://' + domain
+    except:
+        domain = '..'   
+    #print domain
+    return domain
 
-def data_catalog(request, template='catalog.html'):
+def data_catalog(request, template='explore/catalog.html'):
     themes = Theme.objects.filter(visible=True).order_by('display_name')
     themes_with_links = add_learn_links(themes)
     add_ordered_layers_lists(themes_with_links)
