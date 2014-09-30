@@ -19,17 +19,26 @@ def get_domain(port=8010):
 
 def data_catalog(request, template='explore/catalog.html'):
     themes = Theme.objects.filter(visible=True).order_by('display_name')
-    themes_with_links = add_learn_links(themes)
-    add_ordered_layers_lists(themes_with_links)
-    context = {'themes': themes_with_links, 'domain': get_domain(8000), 'domain8010': get_domain()}
+    themes = themes.select_related('layer_set')
+    context = []
+    for theme in themes: 
+        layers = theme.layer_set.exclude(layer_type='placeholder').order_by('name')
+        d = {'theme': theme, 'layers': layers, 'learn_link': theme.learn_link}
+        context.append(d)
+        
+    context = {'themes': context, 'domain': get_domain(8000), 'domain8010': get_domain()}
     return render_to_response(template, RequestContext(request, context)) 
+
 
 def data_needs(request, template='needs.html'):
     themes = Theme.objects.all().order_by('display_name')
     ordered_themes, theme_dict = add_ordered_needs_lists(themes)
-    context = {'themes': themes, 'theme_dict': theme_dict, 'ordered_themes': ordered_themes, 'domain': get_domain(8000), 'domain8010': get_domain()}
+    context = {'themes': themes, 'theme_dict': theme_dict, 
+               'ordered_themes': ordered_themes, 'domain': get_domain(8000), 
+               'domain8010': get_domain()}
     return render_to_response(template, RequestContext(request, context)) 
-    
+
+
 def external_resources(request, template='external_resources.html'):
     context = {'domain': get_domain(8000), 'domain8010': get_domain()}
     return render_to_response(template, RequestContext(request, context)) 
@@ -44,17 +53,7 @@ def add_ordered_needs_lists(themes_list):
             theme_dict[theme] = needs
     return ordered_themes, theme_dict
     
-def add_ordered_layers_lists(themes_list): 
-    for theme_dict in themes_list:
-        layers = theme_dict['theme'].layer_set.all().exclude(layer_type='placeholder').order_by('name')
-        theme_dict['layers'] = layers
-    
-def add_learn_links(themes):
-    context = []
-    for theme in themes:
-        context.append({'theme': theme, 'learn_link': theme.learn_link})
-    return context
-    
+   
 def tiles_page(request, slug=None, template='tiles_page.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     orig_url = layer.url
