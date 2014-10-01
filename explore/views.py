@@ -2,7 +2,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from data_manager.models import *
-from django.conf import settings
+
 
 # from marco/utils.py
 def get_domain(port=8010):
@@ -22,7 +22,8 @@ def data_catalog(request, template='explore/catalog.html'):
     themes = themes.select_related('layer_set')
     context = []
     for theme in themes: 
-        layers = theme.layer_set.exclude(layer_type='placeholder').order_by('name')
+        layers = theme.layer_set.exclude(layer_type='placeholder')
+        layers = layers.order_by('name')
         d = {'theme': theme, 'layers': layers, 'learn_link': theme.learn_link}
         context.append(d)
         
