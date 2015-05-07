@@ -17,18 +17,18 @@ def get_domain(port=8010):
     #print domain
     return domain
 
-def data_catalog(request, template='explore/catalog.html'):
-    themes = Theme.objects.filter(visible=True).order_by('display_name')
-    themes = themes.select_related('layer_set')
-    context = []
-    for theme in themes: 
-        layers = theme.layer_set.exclude(layer_type='placeholder')
-        layers = layers.order_by('name')
-        d = {'theme': theme, 'layers': layers, 'learn_link': theme.learn_link}
-        context.append(d)
+# def data_catalog(request, template='explore/catalog.html'):
+#     themes = Theme.objects.filter(visible=True).order_by('display_name')
+#     themes = themes.select_related('layer_set')
+#     context = []
+#     for theme in themes: 
+#         layers = theme.layer_set.exclude(layer_type='placeholder')
+#         layers = layers.order_by('name')
+#         d = {'theme': theme, 'layers': layers, 'learn_link': theme.learn_link}
+#         context.append(d)
         
-    context = {'themes': context, 'domain': get_domain(8000), 'domain8010': get_domain()}
-    return render_to_response(template, RequestContext(request, context)) 
+#     context = {'themes': context, 'domain': get_domain(8000), 'domain8010': get_domain()}
+#     return render_to_response(template, RequestContext(request, context)) 
 
 
 def data_needs(request, template='needs.html'):
@@ -55,7 +55,7 @@ def add_ordered_needs_lists(themes_list):
     return ordered_themes, theme_dict
     
    
-def tiles_page(request, slug=None, template='tiles_page.html'):
+def tiles_page(request, slug=None, template='explore/tiles_page.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     orig_url = layer.url
     arctile_url = orig_url.replace('{z}', '{level}').replace('{x}', '{col}').replace('{y}', '{row}')
@@ -63,26 +63,26 @@ def tiles_page(request, slug=None, template='tiles_page.html'):
     context = {'layer': layer, 'arctile_url': arctile_url, 'arcrest_url': arcrest_url, 'domain': get_domain(8000)}
     return render_to_response(template, RequestContext(request, context)) 
 
-def map_tile_example(request, slug=None, template='map_tile_example.html'):
+def map_tile_example(request, slug=None, template='explore/map_tile_example.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     context = {'layer': layer}
     return render_to_response(template, RequestContext(request, context)) 
 
-def map_tile_esri_example(request, slug=None, template='map_tile_esri_example.html'):
+def map_tile_esri_example(request, slug=None, template='explore/map_tile_esri_example.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     orig_url = layer.url
     arctile_url = orig_url.replace('{z}', '{level}').replace('{x}', '{col}').replace('{y}', '{row}')
     context = {'layer': layer, 'arctile_url': arctile_url}
     return render_to_response(template, RequestContext(request, context)) 
 
-def map_tile_leaflet_example(request, slug=None, template='map_tile_leaflet_example.html'):
+def map_tile_leaflet_example(request, slug=None, template='explore/map_tile_leaflet_example.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     orig_url = layer.url
     leaflet_url = orig_url.replace('$', '')
     context = {'layer': layer, 'leaflet_url': leaflet_url}
     return render_to_response(template, RequestContext(request, context)) 
 
-def arcrest_example(request, slug=None, template='arcrest_example.html'):
+def arcrest_example(request, slug=None, template='explore/arcrest_example.html'):
     layer = get_object_or_404(Layer, slug_name=slug)
     context = {'layer': layer}
     return render_to_response(template, RequestContext(request, context)) 
