@@ -16,33 +16,6 @@ def get_domain(port=8010):
         domain = '..'   
     #print domain
     return domain
-
-# def data_catalog(request, template='explore/catalog.html'):
-#     themes = Theme.objects.filter(visible=True).order_by('display_name')
-#     themes = themes.select_related('layer_set')
-#     context = []
-#     for theme in themes: 
-#         layers = theme.layer_set.exclude(layer_type='placeholder')
-#         layers = layers.order_by('name')
-#         d = {'theme': theme, 'layers': layers, 'learn_link': theme.learn_link}
-#         context.append(d)
-        
-#     context = {'themes': context, 'domain': get_domain(8000), 'domain8010': get_domain()}
-#     return render_to_response(template, RequestContext(request, context)) 
-
-
-def data_needs(request, template='needs.html'):
-    themes = Theme.objects.all().order_by('display_name')
-    ordered_themes, theme_dict = add_ordered_needs_lists(themes)
-    context = {'themes': themes, 'theme_dict': theme_dict, 
-               'ordered_themes': ordered_themes, 'domain': get_domain(8000), 
-               'domain8010': get_domain()}
-    return render_to_response(template, RequestContext(request, context)) 
-
-
-def external_resources(request, template='external_resources.html'):
-    context = {'domain': get_domain(8000), 'domain8010': get_domain()}
-    return render_to_response(template, RequestContext(request, context)) 
     
 def add_ordered_needs_lists(themes_list):
     theme_dict = {}
