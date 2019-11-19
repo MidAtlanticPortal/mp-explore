@@ -1,7 +1,7 @@
-{% extends 'explore_base.html' %} 
+{% extends 'explore/explore_base.html' %}
 {% block  title %}MARCO Data Priorities{% endblock %}
 {% block main %}
-{% load flatblock_tags %}
+{% load flatblocks %}
 
 <div style="padding-bottom: 20px">
     <h2>{% flatblock "external_resources_title" %}</h2>
@@ -91,13 +91,13 @@
                     <li><a href="http://coastalmap.marine.usgs.gov/" target="_blank">US Geological Survey - Internet Map Server and GIS Data</a></li>
                     <li><a href="http://spatialdata.sam.usace.army.mil/organizations/GIS/Data.aspx " target="_blank">US Geological Survey - Internet Map Server and GIS Data</a></li>
                 </ul>
-                
+
                 <h4>Regional</h4>
                 <ul>
                     <li><a href="http://maracoos.org/web_products" target="_blank">MARACOOS</a></li>
                     <li><a href="http://coastalmap.marine.usgs.gov/regional/contusa/eastcoast/index.html" target="_blank">US Atlantic Coast and Eastern Region Internet Map Server</a></li>
                 </ul>
-                
+
                 <h4>State</h4>
                 <ul>
                     <li><a href="http://www.dnrec.delaware.gov/" target="_blank">Delaware Department of Natural Resources & Environmental Control</a></li>
