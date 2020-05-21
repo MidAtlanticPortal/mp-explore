@@ -1,5 +1,7 @@
-# from django.conf.urls import url, patterns
-from django.urls import re_path, include
+try:
+    from django.urls import re_path
+except ModuleNotFoundError:
+    from django.conf.urls import url as re_path
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from .views import *
